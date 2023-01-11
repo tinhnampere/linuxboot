@@ -30,7 +30,6 @@ flashinitramfs.cpio: Makefile
 		github.com/u-root/u-root/cmds/exp/disk_unlock \
 		github.com/u-root/u-root/cmds/exp/dmidecode \
 		github.com/u-root/u-root/cmds/exp/ipmidump \
-		github.com/u-root/cpu/cmds/cpud
 
 # this target builds an initramfs with only one program, the cpu server.
 # It depends on the kernel setting the IP address.
@@ -62,7 +61,6 @@ sshd.cpio.lzma:  Makefile
 
 flashkernel: flash.config flashinitramfs.cpio.lzma Makefile
 	cp $< linux/.config
-	(cd linux && git apply ../0001-efistub-Workaround-Linuxboot-for-Ubuntu-20.04.patch)
 	(cd linux && ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make olddefconfig && ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make -j32)
 	cp linux/arch/arm64/boot/Image $@
 
@@ -74,7 +72,7 @@ fetch: getkernel geturoot
 
 getkernel:
 	rm -rf linux
-	git clone --depth=1 -b v5.7 --single-branch https://github.com/torvalds/linux
+	git clone --depth=1 -b v6.1 --single-branch https://github.com/torvalds/linux
 	(cd linux && make mrproper)
 	(cd linux && ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make tinyconfig)
 
